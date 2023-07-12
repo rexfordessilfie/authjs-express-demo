@@ -7,6 +7,7 @@ export async function authenticatedUser(
   next: NextFunction
 ) {
   const token = await getToken({
+    // TODO: raise issue on how this doesn't actually accept a request object
     req: {
       cookies: req.cookies,
       headers: req.headers as Record<string, string>,
