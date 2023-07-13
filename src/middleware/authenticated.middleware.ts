@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from "express";
  * Ensures that the user is authenticated when accessing a route.
  * Populates `res.locals` with the decoded JWT token.
  *
- * The types for `req.locals` are found in `express.d.ts`
+ * The types for `res.locals` are found in `express.d.ts`
  */
 export async function authenticatedUser(
   req: Request,
