@@ -3,32 +3,44 @@ import {
   Response as ExpressResponse,
 } from "express";
 
-function urlEncoded(obj: Record<string, any>) {
-  return Object.entries(obj).reduce((acc, [key, val]) => {
-    return `${acc ? `${acc}&` : ""}${encodeURIComponent(
-      key
-    )}=${encodeURIComponent(val as any)}`;
+/**
+ * Encodes an object as url-encoded string.
+ */
+function encodeUrl(obj: Record<string, any>) {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    const encKey = encodeURIComponent(key);
+    const encValue = encodeURIComponent(value);
+    return `${acc ? `${acc}&` : ""}${encKey}=${encValue}`;
   }, "");
 }
 
-function jsonEncoded(obj: Record<string, any>) {
+/**
+ * Encodes an object as JSON
+ */
+function encodeJson(obj: Record<string, any>) {
   return JSON.stringify(obj);
 }
 
+/**
+ * Encodes an express reqeust body based on the content type header.
+ */
 function encodeRequestBody(req: ExpressRequest) {
   const contentType = req.headers["content-type"];
 
   if (contentType?.includes("application/x-www-form-urlencoded")) {
-    return urlEncoded(req.body);
+    return encodeUrl(req.body);
   }
 
   if (contentType?.includes("application/json")) {
-    return jsonEncoded(req.body);
+    return encodeJson(req.body);
   }
 
   return req.body;
 }
 
+/**
+ * Adapts an Express request to a Fetch request, returning the Fetch Request instance.
+ */
 export function adaptRequestFromExpressToFetch(req: ExpressRequest) {
   const url = req.protocol + "://" + req.get("host") + req.originalUrl;
 
@@ -48,27 +60,32 @@ export function adaptRequestFromExpressToFetch(req: ExpressRequest) {
   // GET and HEAD not allowed to receive body
   const body = /GET|HEAD/.test(req.method) ? undefined : encodeRequestBody(req);
 
-  const request = new Request(url, {
+  const fReq = new Request(url, {
     method: req.method,
     headers,
     body,
   });
 
-  return request;
+  return fReq;
 }
 
+/**
+ * Adapts a Fetch Response to an Express response, invoking appropriate
+ * Express response methods to handle the response.
+ */
 export async function adaptResponseFromFetchToExpress(
-  response: Response,
+  fRes: Response,
   res: ExpressResponse
 ) {
-  response.headers.forEach((value, key) => {
+  fRes.headers.forEach((value, key) => {
     if (value) {
       res.appendHeader(key, value);
     }
   });
 
-  res.status(response.status);
-  res.send(await response.text());
+  res.status(fRes.status);
+  res.write(await fRes.text());
+  res.end();
 }
 
 export const httpApiAdapters = {
