@@ -28,7 +28,7 @@ NB: This demo requires Node 19+ which has support for global `crypto` and `fetch
 
 # How It Works
 
-Auth.js, previously NextAuth, provides a `@auth/core` package that works accross different node frameworks.
+Auth.js, previously NextAuth, provides a `@auth/core` package that works across different node frameworks.
 
 However, it is built on top of `fetch`-API's Request and Response objects.
 
@@ -42,7 +42,7 @@ The process is as follows:
 
 The conversion logic that makes this demo possible is found in [`httpApiAdapters.ts`](./src/utils/httpApiAdapters.ts).
 
-# References
+# Acknowledgements
 
 - [next-auth-express-demo](https://github.com/rexfordessilfie/next-auth-express-demo) for Express app setup.
-- [authjs-node-example](https://github.com/jibla/authjs-node-example) for TS configuration and POC.
+- [authjs-node-example](https://github.com/jibla/authjs-node-example) for TS configuration and working example.
