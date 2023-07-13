@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon --experimental-fetch --experimental-global-webcrypto -q dist/index.js\"",
     "build": "tsc",
     "start": "node --experimental-fetch --experimental-global-webcrypto dist/index.js "
   },
